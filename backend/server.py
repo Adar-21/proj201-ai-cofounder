@@ -486,26 +486,26 @@ async def create_booking(input: CreateBookingInput, current_user: dict = Depends
 async def get_user_bookings(current_user: dict = Depends(get_current_user)):
     if current_user["role"] == "user":
         # Get user's bookings via service requests
-        service_requests = await db.service_requests.find({"userId": current_user["id"]}).to_list(100)
+        service_requests = await db.service_requests.find({"userId": current_user["id"]}, {"_id": 0}).to_list(100)
         request_ids = [sr["id"] for sr in service_requests]
-        bookings = await db.bookings.find({"serviceRequestId": {"$in": request_ids}}).to_list(100)
+        bookings = await db.bookings.find({"serviceRequestId": {"$in": request_ids}}, {"_id": 0}).to_list(100)
     else:
         # Get technician's bookings
-        technician = await db.technicians.find_one({"userId": current_user["id"]})
+        technician = await db.technicians.find_one({"userId": current_user["id"]}, {"_id": 0})
         if technician:
-            bookings = await db.bookings.find({"technicianId": technician["id"]}).to_list(100)
+            bookings = await db.bookings.find({"technicianId": technician["id"]}, {"_id": 0}).to_list(100)
         else:
             bookings = []
     
     # Enrich with additional data
     for booking in bookings:
-        service_request = await db.service_requests.find_one({"id": booking["serviceRequestId"]})
+        service_request = await db.service_requests.find_one({"id": booking["serviceRequestId"]}, {"_id": 0})
         if service_request:
             booking["serviceRequest"] = service_request
         
-        technician = await db.technicians.find_one({"id": booking["technicianId"]})
+        technician = await db.technicians.find_one({"id": booking["technicianId"]}, {"_id": 0})
         if technician:
-            user = await db.users.find_one({"id": technician["userId"]})
+            user = await db.users.find_one({"id": technician["userId"]}, {"_id": 0})
             if user:
                 booking["technicianName"] = user["name"]
     
