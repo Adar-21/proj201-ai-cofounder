@@ -513,19 +513,19 @@ async def get_user_bookings(current_user: dict = Depends(get_current_user)):
 
 @api_router.get("/bookings/{booking_id}")
 async def get_booking(booking_id: str, current_user: dict = Depends(get_current_user)):
-    booking = await db.bookings.find_one({"id": booking_id})
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
     
     # Enrich with service request
-    service_request = await db.service_requests.find_one({"id": booking["serviceRequestId"]})
+    service_request = await db.service_requests.find_one({"id": booking["serviceRequestId"]}, {"_id": 0})
     if service_request:
         booking["serviceRequest"] = service_request
     
     # Enrich with technician info
-    technician = await db.technicians.find_one({"id": booking["technicianId"]})
+    technician = await db.technicians.find_one({"id": booking["technicianId"]}, {"_id": 0})
     if technician:
-        user = await db.users.find_one({"id": technician["userId"]})
+        user = await db.users.find_one({"id": technician["userId"]}, {"_id": 0})
         if user:
             booking["technicianName"] = user["name"]
             booking["technicianPhone"] = user["phone"]
@@ -534,7 +534,7 @@ async def get_booking(booking_id: str, current_user: dict = Depends(get_current_
 
 @api_router.put("/bookings/{booking_id}/status")
 async def update_booking_status(booking_id: str, input: UpdateStatusInput, current_user: dict = Depends(get_current_user)):
-    booking = await db.bookings.find_one({"id": booking_id})
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
     if not booking:
         raise HTTPException(status_code=404, detail="Booking not found")
     
