@@ -275,6 +275,10 @@ def calculate_technician_rank(technician: dict, category: str, location: str) ->
 
 # ==================== ROUTES ====================
 
+@api_router.get("/")
+async def root():
+    return {"message": "AppliFix API - Home Repair Service Platform", "status": "active"}
+
 @api_router.post("/auth/register", response_model=LoginResponse)
 async def register(input: RegisterRequest):
     # Check if user exists
