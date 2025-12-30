@@ -570,7 +570,7 @@ async def get_technician_jobs(current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "technician":
         raise HTTPException(status_code=403, detail="Only technicians can access this")
     
-    technician = await db.technicians.find_one({"userId": current_user["id"]})
+    technician = await db.technicians.find_one({"userId": current_user["id"]}, {"_id": 0})
     if not technician:
         raise HTTPException(status_code=404, detail="Technician profile not found")
     
@@ -579,7 +579,7 @@ async def get_technician_jobs(current_user: dict = Depends(get_current_user)):
     service_requests = await db.service_requests.find({
         "category": {"$in": categories},
         "status": "created"
-    }).to_list(100)
+    }, {"_id": 0}).to_list(100)
     
     return service_requests
 
