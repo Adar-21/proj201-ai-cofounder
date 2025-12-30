@@ -16,7 +16,7 @@ BACKEND_URL = "https://techconnect-26.preview.emergentagent.com/api"
 
 # Test credentials
 USER_CREDENTIALS = {"email": "ecem@test.com", "password": "password123"}
-TECHNICIAN_CREDENTIALS = {"email": "ahmet@test.com", "password": "password123"}
+TECHNICIAN_CREDENTIALS = {"email": "mehmet@tech.com", "password": "password123"}
 
 class AppliFix_API_Tester:
     def __init__(self):
