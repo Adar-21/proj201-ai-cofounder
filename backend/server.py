@@ -414,18 +414,18 @@ async def get_technician_matches(request_id: str, current_user: dict = Depends(g
 
 @api_router.get("/technicians/{technician_id}")
 async def get_technician(technician_id: str):
-    technician = await db.technicians.find_one({"id": technician_id})
+    technician = await db.technicians.find_one({"id": technician_id}, {"_id": 0})
     if not technician:
         raise HTTPException(status_code=404, detail="Technician not found")
     
     # Get user info
-    user = await db.users.find_one({"id": technician["userId"]})
+    user = await db.users.find_one({"id": technician["userId"]}, {"_id": 0})
     if user:
         technician["name"] = user["name"]
         technician["phone"] = user["phone"]
     
     # Get reviews
-    reviews = await db.reviews.find({"technicianId": technician_id}).to_list(50)
+    reviews = await db.reviews.find({"technicianId": technician_id}, {"_id": 0}).to_list(50)
     technician["reviews"] = reviews
     
     return technician
@@ -435,7 +435,7 @@ async def update_technician_profile(input: TechnicianProfileInput, current_user:
     if current_user["role"] != "technician":
         raise HTTPException(status_code=403, detail="Only technicians can update profile")
     
-    technician = await db.technicians.find_one({"userId": current_user["id"]})
+    technician = await db.technicians.find_one({"userId": current_user["id"]}, {"_id": 0})
     if not technician:
         raise HTTPException(status_code=404, detail="Technician profile not found")
     
