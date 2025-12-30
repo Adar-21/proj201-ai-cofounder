@@ -101,3 +101,220 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Build an MVP mobile app called "AppliFix" - a platform connecting people with trusted home repair professionals in Istanbul.
+  
+  Core Features:
+  1. Dual Role System: Users can register as either "User" (homeowner) or "Technician" (service provider)
+  2. Service Request Creation: Users submit repair issues with photos/videos and text descriptions
+  3. AI-Assisted Classification: The app uses LLM to categorize problems (plumbing, electrical, appliance) and provide summaries
+  4. Technician Matching: Shows ranked list of verified technicians based on ratings, location, and availability
+  5. Booking & Mock Payment: Users can book appointments with escrow-style mock payment
+  
+  Tech Stack: React Native (Expo) + FastAPI + MongoDB
+  AI: OpenAI GPT-5.2 using Emergent LLM Key
+  
+  Target Users: 25-40 year old renters in Istanbul
+
+backend:
+  - task: "User Authentication (Register/Login)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Auth endpoints implemented with JWT. Register creates user with role (user/technician). Login returns token and user data. Needs testing."
+  
+  - task: "Service Request Creation with AI Classification"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/service-requests endpoint implemented. Uses OpenAI GPT-5.2 via Emergent LLM Key for AI classification. Falls back to rule-based if AI fails. Needs testing."
+  
+  - task: "Technician Matching Algorithm"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "GET /api/service-requests/{id}/matches endpoint implemented. Ranks technicians by rating (40%), category match (30%), location (20%), availability (10%). Needs testing."
+  
+  - task: "Booking Creation and Mock Payment"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/bookings endpoint implemented. Creates booking and mock payment with 'held' status. Updates service request status to 'booked'. Needs testing."
+  
+  - task: "Technician Profile Management"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "PUT /api/technicians/profile endpoint implemented. Allows technicians to update categories, skills, service areas, pricing, and availability. Auto-verifies on profile completion (mock). Needs testing."
+  
+  - task: "Technician Jobs Listing"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "GET /api/technician/jobs endpoint implemented. Returns service requests matching technician's categories with status='created'. Needs testing."
+
+frontend:
+  - task: "Authentication Flow (Login/Register)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/auth/login.tsx, /app/frontend/app/auth/register.tsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "FIXED: AuthContext import paths were incorrect (using ../../ instead of ../). All import paths have been corrected across the app."
+      - working: "NA"
+        agent: "main"
+        comment: "Login and Register screens implemented with form validation, loading states, and error handling. Uses AuthContext for state management. Import paths fixed. Ready for testing."
+  
+  - task: "Service Request Creation Screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/user/create-request.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Create request screen implemented with image picker (base64), text description, urgency selector. Posts to /api/service-requests and navigates to detail screen. Needs testing."
+  
+  - task: "Service Request Detail & Technician Matching"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/service-request/[id].tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Service request detail screen implemented. Shows AI classification results with disclaimer. Displays ranked technician matches. Allows navigation to technician detail and booking. Needs testing."
+  
+  - task: "Technician Detail & Booking Flow"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/technician-matches/[id].tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Technician detail screen implemented. Shows profile, ratings, reviews, pricing, availability. Booking flow with date/time picker and mock payment confirmation. Needs testing."
+  
+  - task: "Tab Navigation (Home/Requests/Profile)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/(tabs)/_layout.tsx, /app/frontend/app/(tabs)/home.tsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "FIXED: AuthContext import paths were incorrect. Fixed from ../../ to ../contexts/AuthContext in all tab screens."
+      - working: "NA"
+        agent: "main"
+        comment: "Tab navigation implemented with Home, Requests, and Profile tabs. Home screen shows quick actions based on user role. Import paths fixed. Ready for testing."
+  
+  - task: "Technician Jobs Screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/technician/jobs.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Technician jobs screen implemented. Fetches available jobs from /api/technician/jobs. Shows job cards with details. Needs testing."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+  last_updated: "2025-06-XX Session 1"
+
+test_plan:
+  current_focus:
+    - "User Authentication (Register/Login)"
+    - "Service Request Creation with AI Classification"
+    - "Technician Matching Algorithm"
+    - "Booking Creation and Mock Payment"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+  test_instructions: |
+    BACKEND TESTING PRIORITY:
+    1. Test authentication flow first: Register new user and technician, then login with seed data credentials
+    2. Test service request creation with AI classification (use test description about plumbing/electrical issue)
+    3. Test technician matching for the created service request
+    4. Test booking creation and verify mock payment is created
+    
+    Credentials for testing:
+    - User: ecem@test.com / password123
+    - Technician: ahmet@test.com / password123
+    
+    FRONTEND TESTING:
+    - Only test frontend AFTER user explicitly grants permission
+    - Focus on the complete user flow: Login -> Create Request -> View Matches -> Book Technician
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Fixed critical AuthContext import path issues across all frontend files. The context was located in app/contexts/ but files were importing from wrong paths (../../ instead of ../).
+      
+      Changes made:
+      - Fixed imports in: login.tsx, register.tsx, home.tsx, (tabs)/_layout.tsx
+      - All imports now correctly use '../contexts/AuthContext'
+      - Restarted Expo server to apply changes
+      
+      Backend is running and all endpoints are implemented with:
+      - JWT authentication
+      - AI classification using OpenAI GPT-5.2 (Emergent LLM Key)
+      - Technician matching algorithm
+      - Mock payment system
+      - Seeded database with test users
+      
+      Ready for backend testing first, then will request user permission for frontend testing.
