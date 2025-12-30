@@ -371,14 +371,14 @@ async def create_service_request(input: CreateServiceRequestInput, current_user:
 
 @api_router.get("/service-requests/{request_id}")
 async def get_service_request(request_id: str, current_user: dict = Depends(get_current_user)):
-    service_request = await db.service_requests.find_one({"id": request_id})
+    service_request = await db.service_requests.find_one({"id": request_id}, {"_id": 0})
     if not service_request:
         raise HTTPException(status_code=404, detail="Service request not found")
     return service_request
 
 @api_router.get("/service-requests")
 async def get_user_service_requests(current_user: dict = Depends(get_current_user)):
-    requests = await db.service_requests.find({"userId": current_user["id"]}).to_list(100)
+    requests = await db.service_requests.find({"userId": current_user["id"]}, {"_id": 0}).to_list(100)
     return requests
 
 @api_router.get("/service-requests/{request_id}/matches")
