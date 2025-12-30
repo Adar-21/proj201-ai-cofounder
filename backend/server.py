@@ -390,8 +390,8 @@ async def get_technician_matches(request_id: str, current_user: dict = Depends(g
     category = service_request.get("category")
     location = service_request.get("location")
     
-    # Get all technicians
-    all_technicians = await db.technicians.find().to_list(100)
+    # Get all technicians (exclude _id field to avoid ObjectId serialization issues)
+    all_technicians = await db.technicians.find({}, {"_id": 0}).to_list(100)
     
     # Rank technicians
     ranked_technicians = []
@@ -399,8 +399,8 @@ async def get_technician_matches(request_id: str, current_user: dict = Depends(g
         score = calculate_technician_rank(tech, category, location)
         tech["matchScore"] = score
         
-        # Get user info
-        user = await db.users.find_one({"id": tech["userId"]})
+        # Get user info (exclude _id field)
+        user = await db.users.find_one({"id": tech["userId"]}, {"_id": 0})
         if user:
             tech["name"] = user["name"]
             tech["phone"] = user["phone"]
