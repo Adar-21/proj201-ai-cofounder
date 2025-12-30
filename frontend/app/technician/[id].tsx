@@ -46,35 +46,50 @@ export default function TechnicianDetailScreen() {
       return;
     }
 
-    setBooking(true);
-    try {
-      // Get user address (simplified for MVP)
-      const userResponse = await api.get('/auth/me');
-      const address = userResponse.data.address || 'Istanbul';
+    // Mock Payment Confirmation
+    Alert.alert(
+      '💳 Mock Payment',
+      `Amount: ${technician.basePricingInfo?.split('-')[0] || '$100'}\n\nPayment will be held in escrow until service is completed.`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm Payment',
+          onPress: async () => {
+            setBooking(true);
+            try {
+              const userResponse = await api.get('/auth/me');
+              const address = userResponse.data.address || 'Istanbul';
 
-      const response = await api.post('/bookings', {
-        serviceRequestId: requestId,
-        technicianId: id,
-        scheduledTime: selectedSlot,
-        address,
-        estimatedPrice: technician.basePricingInfo?.split('-')[0] || '$100',
-      });
+              await api.post('/bookings', {
+                serviceRequestId: requestId,
+                technicianId: id,
+                scheduledTime: selectedSlot,
+                address,
+                estimatedPrice: technician.basePricingInfo?.split('-')[0] || '$100',
+              });
 
-      Alert.alert(
-        'Booking Confirmed!',
-        'Your technician has been notified and will arrive at the scheduled time.',
-        [
-          {
-            text: 'View Booking',
-            onPress: () => router.replace(`/booking/${response.data.id}`),
+              Alert.alert(
+                '✅ Booking Confirmed!',
+                'Payment held in escrow. Your technician has been notified.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => router.back(),
+                  },
+                ]
+              );
+            } catch (error: any) {
+              Alert.alert('Error', error.response?.data?.detail || 'Booking failed');
+            } finally {
+              setBooking(false);
+            }
           },
-        ]
-      );
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Booking failed');
-    } finally {
-      setBooking(false);
-    }
+        },
+      ]
+    );
   };
 
   if (loading) {
