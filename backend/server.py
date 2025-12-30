@@ -282,7 +282,7 @@ async def root():
 @api_router.post("/auth/register", response_model=LoginResponse)
 async def register(input: RegisterRequest):
     # Check if user exists
-    existing_user = await db.users.find_one({"email": input.email})
+    existing_user = await db.users.find_one({"email": input.email}, {"_id": 0})
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
